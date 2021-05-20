@@ -45,7 +45,7 @@ wsServer.on('request', function(request) {
     
     var connection = request.accept('on-update', request.origin);
     console.log((new Date()) + ' Connection accepted.');
-    var unsubs = [];
+    var fin = null;
 
     connection.on('message', async function(message) {
         if (message.type === 'utf8') {
@@ -58,7 +58,10 @@ wsServer.on('request', function(request) {
                     const unsub = await api.candle({figi: figi, interval: "day"}, (stream) => {
                         connection.sendUTF(JSON.stringify(stream));
                     });
-                    unsubs.push(unsub);
+                    if (fin) {
+                        fin();
+                    }
+                    fin = unsub;
                 }
             }
         }
@@ -68,9 +71,6 @@ wsServer.on('request', function(request) {
         }
     });
     connection.on('close', function(reasonCode, description) {
-        unsubs.forEach((unsub) => {
-            unsub();
-        });
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
 });
