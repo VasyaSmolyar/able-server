@@ -3,10 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import http from 'http';
 import { server } from 'websocket';
+import { apiURL, secretToken, socketURL } from './config';
 
-const apiURL = 'https://api-invest.tinkoff.ru/openapi/sandbox'; // Для Production-окружения будет https://api-invest.tinkoff.ru/openapi
-const socketURL = 'wss://api-invest.tinkoff.ru/openapi/md/v1/md-openapi/ws';
-const secretToken = 't.hGeyci0o8BDXyi37Fs2GsqBFOXV6iBwJFChPHiIeSjlgO7sj9Xc99vbbRQJxb6rJIeIwAvKvO4xWPMXxhJty0A'; // токен для сандбокса
 const api = new OpenAPI({ apiURL, secretToken, socketURL });
 
 const app = express();
